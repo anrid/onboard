@@ -1,0 +1,21 @@
+{
+  "eslint.alwaysShowStatus": true,
+  "eslint.autoFixOnSave": true,
+  "eslint.packageManager": "yarn",
+  "eslint.enable": true,
+
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+
+  "typescript.updateImportsOnFileMove.enabled": "always",
+
+  "files.eol": "\n",
+
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "git.ignoreLimitWarning": true
+}

@@ -1,0 +1,25 @@
+{
+  "name": "onboard_company_server",
+  "version": "1.0.0",
+  "description": "Onboard.company server / API.",
+  "main": "index.js",
+  "author": "Anri Digholm",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/cassandra-driver": "^4.0.3",
+    "@types/dotenv": "^6.1.1",
+    "@types/flake-idgen": "^0.1.30",
+    "@types/node": "^12.6.9",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "eslint": "^6.1.0",
+    "eslint-config-prettier": "^6.0.0",
+    "prettier": "^1.18.2",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "cassandra-driver": "^4.1.0",
+    "dotenv": "^8.0.0",
+    "flake-idgen": "^1.1.2"
+  }
+}

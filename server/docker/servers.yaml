@@ -1,0 +1,68 @@
+version: '3.7'
+
+services:
+  es1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    restart: on-failure
+    hostname: es1
+    environment:
+      - node.name=es1
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - http.publish_host=es1
+      - http.compression=true
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+      - http.cors.allow-credentials=true
+      - indices.breaker.total.limit=10g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es1-data:/usr/share/elasticsearch/data
+    ports:
+      - "0.0.0.0:9200:9200"
+      - "0.0.0.0:9300:9300"
+    networks:
+      - network
+
+  kibana1:
+    image: docker.elastic.co/kibana/kibana:7.3.0
+    restart: on-failure
+    hostname: kibana1
+    environment:
+      ELASTICSEARCH_HOSTS: http://es1:9200/
+    ports:
+      - "0.0.0.0:5601:5601"
+    networks:
+      - network
+    depends_on:
+      - es1
+
+  scylla1:
+    image: scylladb/scylla:3.0.9
+    restart: on-failure
+    hostname: scylla1
+    command: --listen-address 0.0.0.0 --broadcast-address 127.0.0.1 --broadcast-rpc-address 127.0.0.1
+    volumes:
+      - scylla1-data:/var/lib/scylla
+    ports:
+      - "0.0.0.0:9042:9042"
+    networks:
+      - network
+
+volumes:
+  es1-data:
+    external:
+      name: onboard-es1-volume
+  scylla1-data:
+    external:
+      name: onboard-scylla1-volume      
+
+networks:
+  network:
+    external:
+      name: onboard
