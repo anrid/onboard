@@ -1,5 +1,5 @@
 import Cassandra from 'cassandra-driver'
-import C from './config'
+import C from '../config'
 
 let client: Cassandra.Client
 
@@ -14,9 +14,12 @@ export function getClient(): Cassandra.Client {
   return client
 }
 
-export async function mustExec(cql: string): Promise<void> {
+export async function mustExec(
+  client: Cassandra.Client,
+  cql: string,
+): Promise<void> {
   try {
-    await getClient().execute(cql)
+    await client.execute(cql)
   } catch (err) {
     console.log('Fatal:', err)
     process.exit(-1)
