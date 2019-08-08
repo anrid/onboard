@@ -8,7 +8,7 @@ export function getClient(): Cassandra.Client {
     return client
   }
   client = new Cassandra.Client({
-    contactPoints: [C.ONBOARD_CQL_HOST],
+    contactPoints: [C.CQL_HOST],
     localDataCenter: 'datacenter1',
   })
   return client

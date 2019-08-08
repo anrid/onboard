@@ -1,4 +1,8 @@
 import Cassandra from 'cassandra-driver'
+import Express from 'express'
+import Https from 'https'
+import { verify } from 'jsonwebtoken'
+import { isError } from 'util'
 
 export as namespace onboard
 export = onboard
@@ -40,7 +44,35 @@ declare namespace onboard {
     user: Cassandra.mapping.ModelMapper
   }
 
-  type Result = Cassandra.mapping.Result
-}
+  interface IApp {
+    app: Express.Application
+    server: Https.Server
+    start: () => void
+  }
 
-declare module 'biguint-format'
+  interface ISession {
+    account_id: string
+    user_id: string
+    email: string
+  }
+
+  interface IToken {
+    create(s: ISession): string
+    verify(t: string): ISession
+    require(
+      req: Express.Request,
+      res: Express.Response,
+      next: Express.NextFunction,
+    ): void
+  }
+
+  interface IError {
+    message: string
+  }
+
+  type Result = Cassandra.mapping.Result
+
+  type MyRequest = Express.Request & {
+    session: ISession
+  }
+}

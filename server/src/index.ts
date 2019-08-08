@@ -1,7 +1,8 @@
-import Assert from "assert"
+import * as App from './app'
 
-Assert(true, "could not do it!")
-
-async function run(): Promise<void> {}
+async function run(): Promise<void> {
+  const app = App.create()
+  app.start()
+}
 
 run().catch((err): void => console.error(err))
