@@ -4,7 +4,7 @@ import Fs from 'fs'
 import BodyParser from 'body-parser'
 import Compression from 'compression'
 import * as Token from './token'
-import * as Google from './google'
+import { GoogleController } from './controllers/google'
 import C from './config'
 import T from './index.d'
 
@@ -24,8 +24,10 @@ export function create(): T.IApp {
     res.send({ message: 'It’s on like Donkey Kong' })
   })
 
-  app.get('/oauth', Google.authHandler)
-  app.get('/oauth/callback', Google.authCallbackHandler)
+  const googleCtrl = new GoogleController()
+
+  app.get('/oauth', googleCtrl.auth())
+  app.get('/oauth/callback', googleCtrl.authCallback())
 
   const requireToken = Token.getInstance().require
 

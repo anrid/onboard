@@ -1,10 +1,10 @@
 import * as Db from './db'
-import * as U from '../util'
+import { Account } from '../types/account'
 import T from '../index.d'
 
 export const TABLE = 'account'
 
-export class AccountStore {
+export class AccountStore implements T.IAccountStore {
   public name: string = TABLE
   public c: T.ICQL
 
@@ -28,34 +28,17 @@ export class AccountStore {
     )
   }
 
-  public create(d: Account): Promise<T.Result> {
+  public create(d: T.IAccount): Promise<T.Result> {
     return this.c.mapper.account.insert(d)
   }
 
-  public async getOne(id: string): Promise<Account> {
+  public async getOne(id: string): Promise<T.IAccount> {
     const r = await this.c.mapper.account.get({ id })
     return Object.assign(new Account(), r)
   }
-}
 
-export class Account implements T.IAccount {
-  public id: string
-  public name: string = ''
-  public owner_id: string = ''
-  public admins: string[] = []
-  public logo: string = ''
-
-  public static create(id: string = null, name: string): Account {
-    if (id == null) {
-      id = U.createId()
-    }
-    if (name.length < 1) {
-      throw Error('name is empty')
-    }
-
-    const d = new Account()
-    d.id = id
-    d.name = name
-    return d
+  public async updateOne(a: T.IAccount, fields: string[]): Promise<void> {
+    await this.c.mapper.account.update(a, { fields })
+    return
   }
 }

@@ -1,8 +1,6 @@
 import Cassandra from 'cassandra-driver'
 import Express from 'express'
 import Https from 'https'
-import { verify } from 'jsonwebtoken'
-import { isError } from 'util'
 
 export as namespace onboard
 export = onboard
@@ -21,9 +19,14 @@ declare namespace onboard {
   interface IUser {
     account_id: ID
     id: ID
-    name: string
+    display_name: string
+    family_name: string
+    given_name: string
     email: string
     photo: string
+    language: string
+    google_id: string
+    is_admin: boolean
   }
 
   interface ICreateUserArgs {
@@ -74,5 +77,23 @@ declare namespace onboard {
 
   type MyRequest = Express.Request & {
     session: ISession
+  }
+
+  type Handler = (req: MyRequest, res: Express.Response) => void
+
+  interface IAccountStore extends IStore {
+    create(d: IAccount): Promise<Result>
+    getOne(id: string): Promise<IAccount>
+    updateOne(a: IAccount, fields: string[]): Promise<void>
+  }
+
+  interface IUserStore extends IStore {
+    create(d: IUser): Promise<Result>
+    getOne(accountId: string, id: string): Promise<IUser>
+    getUsersByEmail(email: string): Promise<IUser[]>
+  }
+
+  interface IStore {
+    createTable(): Promise<void>
   }
 }
