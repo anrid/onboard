@@ -50,7 +50,7 @@ services:
     volumes:
       - scylla1-data:/var/lib/scylla
     ports:
-      - "0.0.0.0:9042:9042"
+      - '0.0.0.0:9042:9042'
     networks:
       - network
 
@@ -60,7 +60,7 @@ volumes:
       name: onboard-es1-volume
   scylla1-data:
     external:
-      name: onboard-scylla1-volume      
+      name: onboard-scylla1-volume
 
 networks:
   network:

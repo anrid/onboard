@@ -31,7 +31,7 @@ export function getInstance(): T.IToken {
   ): void {
     if (!req.headers || !req.headers.authorization) {
       return next(
-        Error.UnauthorizedError('missing_authorization_header', {
+        Error.Unauthorized('missing_authorization_header', {
           message: 'Format is Authorization: Bearer [token]',
         }),
       )
@@ -40,7 +40,7 @@ export function getInstance(): T.IToken {
     const parts = req.headers.authorization.split(' ')
     if (parts.length != 2) {
       return next(
-        Error.UnauthorizedError('bad_authorization_header', {
+        Error.Unauthorized('bad_authorization_header', {
           message: 'Format is Authorization: Bearer [token]',
         }),
       )
@@ -51,7 +51,7 @@ export function getInstance(): T.IToken {
 
     if (scheme.toLowerCase() !== 'bearer') {
       return next(
-        Error.UnauthorizedError('bad_scheme', {
+        Error.Unauthorized('bad_scheme', {
           message: 'Format is Authorization: Bearer [token]',
         }),
       )
@@ -59,7 +59,7 @@ export function getInstance(): T.IToken {
 
     if (token.length < 10) {
       return next(
-        Error.UnauthorizedError('bad_token', {
+        Error.Unauthorized('bad_token', {
           message: 'Format is Authorization: Bearer [token]',
         }),
       )
@@ -70,7 +70,7 @@ export function getInstance(): T.IToken {
       req.session = session
     } catch (err) {
       return next(
-        Error.UnauthorizedError('invalid_token', {
+        Error.Unauthorized('invalid_token', {
           message: 'Token could not be decoded: ' + err.message,
         }),
       )

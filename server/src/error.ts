@@ -24,6 +24,17 @@ export class CustomError extends Error {
   }
 }
 
-export function UnauthorizedError(code: string, error: T.IError): CustomError {
-  return new CustomError('UnauthorizedError', code, 401, error)
+export function Unauthorized(code: string, error: T.IError): CustomError {
+  return new CustomError('Unauthorized', code, 401, error)
+}
+
+export function BadRequest(code: string, error: T.IError): CustomError {
+  return new CustomError('BadRequest', code, 400, error)
+}
+
+export function InternalServerError(
+  code: string,
+  error: T.IError,
+): CustomError {
+  return new CustomError('InternalServerError', code, 500, error)
 }
