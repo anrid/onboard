@@ -16,7 +16,11 @@ export function getInstance(): T.IToken {
   const privkey = Fs.readFileSync(C.TLS_PRIVKEY)
 
   function create(s: T.ISession): string {
-    return Jwt.sign(s, privkey, { algorithm: 'RS256', issuer: 'align' })
+    return Jwt.sign(s, privkey, {
+      algorithm: 'RS256',
+      issuer: 'align',
+      expiresIn: '7d',
+    })
   }
 
   function verify(token: string): T.ISession {
@@ -91,10 +95,12 @@ export function newSession(
   accountId: string,
   userId: string,
   email: string,
+  isAdmin: boolean,
 ): T.ISession {
   return {
     account_id: accountId,
     user_id: userId,
     email,
+    is_admin: isAdmin,
   }
 }

@@ -26,8 +26,9 @@ interface Credentials {
 
 export class GoogleController {
   private keys: Credentials
+  private signupSvc: T.ISignupService
 
-  public constructor() {
+  public constructor(signupSvc: T.ISignupService) {
     // Make sure Google OAuth credentials exist and contain
     // the expected redirect uri.
     this.keys = require(C.GOOGLE_OAUTH_CREDENTIALS) // eslint-disable-line @typescript-eslint/no-var-requires
@@ -38,6 +39,8 @@ export class GoogleController {
       'Expected credentials to contain redirect uri: ' +
         C.GOOGLE_OAUTH_REDIRECT_URI,
     )
+
+    this.signupSvc = signupSvc
   }
 
   public getClient(): Google.OAuth2Client {

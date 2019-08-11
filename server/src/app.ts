@@ -5,10 +5,11 @@ import BodyParser from 'body-parser'
 import Compression from 'compression'
 import * as Token from './token'
 import { GoogleController } from './controllers/google'
+import { bootstrap } from './bootstrap'
 import C from './config'
 import T from './index.d'
 
-export function create(): T.IApp {
+export async function create(): Promise<T.IApp> {
   const options = {
     key: Fs.readFileSync(C.TLS_PRIVKEY),
     cert: Fs.readFileSync(C.TLS_CERT),
@@ -20,17 +21,22 @@ export function create(): T.IApp {
   app.use(BodyParser.json())
   app.use(BodyParser.urlencoded({ extended: true }))
 
+  // Our root.
   app.get('/', (req, res): void => {
-    res.send({ message: 'It’s on like Donkey Kong' })
+    res.send({ message: `It's on like Donkey Kong` })
   })
 
-  const googleCtrl = new GoogleController()
+  // Bootstrap and wire up controllers.
+  const backend = await bootstrap()
+
+  const googleCtrl = new GoogleController(backend.services.signup)
 
   app.get('/oauth', googleCtrl.auth())
   app.get('/oauth/callback', googleCtrl.authCallback())
 
   const requireToken = Token.getInstance().require
 
+  // Test endpoint.
   app.get('/secret', requireToken, (req: T.MyRequest, res): void => {
     res.send({
       message: 'Secret Grotto!',

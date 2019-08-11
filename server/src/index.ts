@@ -1,7 +1,7 @@
 import * as App from './app'
 
 async function run(): Promise<void> {
-  const app = App.create()
+  const app = await App.create()
   app.start()
 }
 

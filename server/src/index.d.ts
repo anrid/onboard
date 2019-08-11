@@ -57,6 +57,7 @@ declare namespace onboard {
     account_id: string
     user_id: string
     email: string
+    is_admin: boolean
   }
 
   interface IToken {
@@ -95,5 +96,37 @@ declare namespace onboard {
 
   interface IStore {
     createTable(): Promise<void>
+    deleteAll(): Promise<void>
+  }
+
+  interface IUserProfile {
+    displayName: string
+    familyName: string
+    givenName: string
+    photo: string
+    language: string
+  }
+
+  interface ILoginOrSignupResult {
+    user: IUser
+    token: string
+    signup: boolean
+  }
+
+  interface ISignupService {
+    loginOrSignup(
+      email: string,
+      profile: IUserProfile,
+    ): Promise<ILoginOrSignupResult>
+  }
+
+  interface IBackend {
+    stores: {
+      user: IUserStore
+      account: IAccountStore
+    }
+    services: {
+      signup: ISignupService
+    }
   }
 }

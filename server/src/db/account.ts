@@ -13,6 +13,8 @@ export class AccountStore implements T.IAccountStore {
   }
 
   public createTable(): Promise<void> {
+    console.log(`Creating table: ${this.c.keyspace}.${this.name}`)
+
     return Db.mustExec(
       this.c.client,
       `
@@ -39,6 +41,12 @@ export class AccountStore implements T.IAccountStore {
 
   public async updateOne(a: T.IAccount, fields: string[]): Promise<void> {
     await this.c.mapper.account.update(a, { fields })
+    return
+  }
+
+  public async deleteAll(): Promise<void> {
+    const q = `TRUNCATE TABLE ${this.c.keyspace}.${this.name}`
+    await this.c.client.execute(q)
     return
   }
 }

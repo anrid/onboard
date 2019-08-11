@@ -13,6 +13,7 @@
     "@types/flake-idgen": "0.1.30",
     "@types/jsonwebtoken": "8.3.3",
     "@types/node": "12.7.1",
+    "@types/sinon": "7.0.13",
     "@types/supertest": "2.0.8",
     "@types/tape": "4.2.33",
     "@typescript-eslint/eslint-plugin": "1.13.0",
@@ -30,9 +31,14 @@
     "dotenv": "8.0.0",
     "express": "4.17.1",
     "flake-idgen": "1.1.2",
-    "google-auth-library": "^5.2.0",
+    "google-auth-library": "5.2.0",
     "jsonwebtoken": "8.5.1",
+    "sinon": "7.4.1",
     "supertest": "4.0.2",
     "tape": "4.11.0"
+  },
+  "scripts": {
+    "build": "rm -rf dist/ && tsc",
+    "test": "tape dist/**/*_test.js"
   }
 }

@@ -36,7 +36,7 @@ const config = {
   GOOGLE_OAUTH_CREDENTIALS: process.env.ONBOARD_GOOGLE_OAUTH_CREDENTIALS,
   GOOGLE_OAUTH_REDIRECT_URI: process.env.ONBOARD_GOOGLE_OAUTH_REDIRECT_URI,
 
-  TESTING: process.env.TESTING,
+  TESTING: process.env.NODE_ENV == 'testing',
 
   getKeyspace(): string {
     return this.TESTING ? this.CQL_SCHEMA + '_test' : this.CQL_SCHEMA

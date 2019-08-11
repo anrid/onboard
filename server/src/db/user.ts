@@ -13,6 +13,8 @@ export class UserStore implements T.IUserStore {
   }
 
   public async createTable(): Promise<void> {
+    console.log(`Creating table: ${this.c.keyspace}.${this.name}`)
+
     await Db.mustExec(
       this.c.client,
       `
@@ -35,7 +37,7 @@ export class UserStore implements T.IUserStore {
     await Db.mustExec(
       this.c.client,
       `
-      CREATE MATERIALIZED VIEW ${this.c.keyspace}.${this.name}_by_email AS
+      CREATE MATERIALIZED VIEW IF NOT EXISTS ${this.c.keyspace}.${this.name}_by_email AS
         SELECT * FROM ${this.c.keyspace}.${this.name}
         WHERE email IS NOT NULL AND account_id IS NOT NULL AND id IS NOT NULL
         PRIMARY KEY(email, account_id, id);
@@ -57,5 +59,11 @@ export class UserStore implements T.IUserStore {
     const rs = await this.c.client.execute(q, [email])
     // console.log('r=', r)
     return rs.rows.map((x): T.IUser => Object.assign(new User(), x))
+  }
+
+  public async deleteAll(): Promise<void> {
+    const q = `TRUNCATE TABLE ${this.c.keyspace}.${this.name}`
+    await this.c.client.execute(q)
+    return
   }
 }

@@ -4,19 +4,6 @@ import { Account } from '../types/account'
 import { User } from '../types/user'
 import T from '../index.d'
 
-interface Profile {
-  displayName: string
-  familyName: string
-  givenName: string
-  photo: string
-  language: string
-}
-
-interface LoginResult {
-  user: T.IUser
-  token: string
-}
-
 export class SignupService {
   private userStore: T.IUserStore
   private accountStore: T.IAccountStore
@@ -28,19 +15,16 @@ export class SignupService {
 
   public async loginOrSignup(
     email: string,
-    profile: Profile,
-  ): Promise<LoginResult> {
+    profile: T.IUserProfile,
+  ): Promise<T.ILoginOrSignupResult> {
     let user: T.IUser
-    let session: T.ISession
-    let token: string
+    let signup = false
 
     const users = await this.userStore.getUsersByEmail(email)
     if (users.length > 0) {
       // Found at least one existing account.
       // Create a new session and generate a new token.
       user = users[0]
-      session = Token.newSession(user.account_id, user.id, user.email)
-      token = Token.getInstance().create(session)
     } else {
       // Create a new account and user.
       if (profile == null) {
@@ -59,13 +43,21 @@ export class SignupService {
       account.admins = [user.id]
       await this.accountStore.updateOne(account, ['id', 'owner_id', 'admins'])
 
-      session = Token.newSession(user.account_id, user.id, user.email)
-      token = Token.getInstance().create(session)
+      signup = true
     }
+
+    const session = Token.newSession(
+      user.account_id,
+      user.id,
+      user.email,
+      user.is_admin,
+    )
+    const token = Token.getInstance().create(session)
 
     return {
       user,
       token,
+      signup,
     }
   }
 }

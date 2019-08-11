@@ -1,38 +1,48 @@
 import Test from 'tape'
 import Request from 'supertest'
 import * as Token from './token'
-import * as App from './app'
+import * as Helper from './test_helper'
 
-const app = App.create().app
+Test(
+  'GET /',
+  async (t): Promise<void> => {
+    t.plan(1)
 
-Test('GET /', (t): void => {
-  t.plan(1)
+    const app = await Helper.setupApp()
 
-  Request(app)
-    .get('/')
-    .expect('Content-Type', /json/)
-    .expect(200)
-    .then((res): void => {
+    try {
+      const res = await Request(app.app)
+        .get('/')
+        .expect('Content-Type', /json/)
+        .expect(200)
+
       // console.log(res.body)
       t.ok(
-        String(res.body.message).includes('It’s on'),
-        'should contain "It’s on"',
+        String(res.body.message).includes(`It's on`),
+        `should contain "It's on"`,
       )
-    })
-})
+    } catch (err) {
+      t.fail(err.message)
+    }
+  },
+)
 
-Test('GET /secret', (t): void => {
-  t.plan(2)
+Test(
+  'GET /secret',
+  async (t): Promise<void> => {
+    t.plan(2)
 
-  const session = Token.newSession('x', 'y', 'z')
-  const token = Token.getInstance().create(session)
+    const app = await Helper.setupApp()
+    const session = Token.newSession('x', 'y', 'z', true)
+    const token = Token.getInstance().create(session)
 
-  Request(app)
-    .get('/secret')
-    .set('Authorization', 'Bearer ' + token)
-    .expect('Content-Type', /json/)
-    .expect(200)
-    .then((res): void => {
+    try {
+      const res = await Request(app.app)
+        .get('/secret')
+        .set('Authorization', 'Bearer ' + token)
+        .expect('Content-Type', /json/)
+        .expect(200)
+
       // console.log(res.body)
       t.ok(
         res.body.message.includes('Secret Grotto!'),
@@ -41,10 +51,10 @@ Test('GET /secret', (t): void => {
       t.equal(
         res.body.session.account_id,
         session.account_id,
-        'should return session with account_id',
+        'should return session with correct account id',
       )
-    })
-    .catch((err): void => {
-      t.fail('got error: ' + err.message)
-    })
-})
+    } catch (err) {
+      t.fail(err.message)
+    }
+  },
+)
