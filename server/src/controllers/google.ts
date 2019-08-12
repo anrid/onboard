@@ -4,7 +4,7 @@ import * as Google from 'google-auth-library'
 import C from '../config'
 import * as E from '../error'
 import { fail } from '../util'
-import T from '../index.d'
+import * as T from '../types'
 
 interface GooglePlusProfile {
   emails: [{ value: string; type: string }]
@@ -26,9 +26,9 @@ interface Credentials {
 
 export class GoogleController {
   private keys: Credentials
-  private signupSvc: T.ISignupService
+  private signupSvc: T.SignupService
 
-  public constructor(signupSvc: T.ISignupService) {
+  public constructor(signupSvc: T.SignupService) {
     // Make sure Google OAuth credentials exist and contain
     // the expected redirect uri.
     this.keys = require(C.GOOGLE_OAUTH_CREDENTIALS) // eslint-disable-line @typescript-eslint/no-var-requires
@@ -59,6 +59,12 @@ export class GoogleController {
     }
   }
 
+  public authPage(): T.Handler {
+    return (req: T.MyRequest, res: Express.Response): void => {
+      res.send(`<a href="${this.getAuthUrl()}">Signin by Google</a>`)
+    }
+  }
+
   public authCallback(): T.Handler {
     return async (req: T.MyRequest, res: Express.Response): Promise<void> => {
       try {
@@ -73,27 +79,35 @@ export class GoogleController {
         }
         console.log(`Got code: ${code}`)
 
-        const c = this.getClient()
+        const client = this.getClient()
 
         // Use code to acquire tokens.
-        const tokens = await c.getToken(code)
-        console.log('Got tokens:', tokens)
+        const r1 = await client.getToken(code)
+        console.log('Got tokens:', r1.tokens)
 
         // Make sure to set the credentials on the OAuth2 client.
-        c.setCredentials(tokens.tokens)
+        client.setCredentials(r1.tokens)
 
-        const r = await c.request({
+        const r2 = await client.request({
           url: 'https://www.googleapis.com/plus/v1/people/me',
         })
 
-        const profile = r.data as GooglePlusProfile
+        const profile = r2.data as GooglePlusProfile
         console.log('Got profile:', profile)
+        const email = profile.emails[0].value
 
-        // const email = profile.emails[0].value
-
-        res.send({
-          profile,
+        const r3 = await this.signupSvc.login({
+          email,
+          profile: {
+            display_name: profile.displayName,
+            given_name: profile.name.givenName,
+            family_name: profile.name.familyName,
+            language: profile.language,
+            photo: profile.image.url,
+          },
         })
+
+        res.send(r3)
       } catch (err) {
         return fail(
           res,

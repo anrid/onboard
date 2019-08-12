@@ -25,3 +25,23 @@ export async function mustExec(
     process.exit(-1)
   }
 }
+
+export async function createKeyspace(
+  client: Cassandra.Client,
+  keyspace: string,
+  drop: boolean,
+): Promise<void> {
+  if (drop) {
+    console.log('Dropping keyspace:', keyspace)
+    await mustExec(client, `DROP KEYSPACE IF EXISTS ${keyspace}`)
+  }
+
+  console.log('Creating keyspace:', keyspace)
+  await mustExec(
+    client,
+    `
+    CREATE KEYSPACE IF NOT EXISTS ${keyspace}
+    WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 3};
+  `,
+  )
+}

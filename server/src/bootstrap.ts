@@ -4,14 +4,14 @@ import * as Mapper from './db/mapper'
 import { AccountStore } from './db/account'
 import { UserStore } from './db/user'
 import C from './config'
-import T from './index.d'
+import * as T from './types'
 
-export async function bootstrap(): Promise<T.IBackend> {
+export async function bootstrap(): Promise<T.Backend> {
   const keyspace = C.getKeyspace()
   const client = await Db.getClient()
 
   const mapper = Mapper.createMapper(keyspace, client)
-  const cql: T.ICQL = {
+  const cql: T.CQL = {
     keyspace,
     client,
     mapper,

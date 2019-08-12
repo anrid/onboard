@@ -13,6 +13,8 @@ Assert(process.env.ONBOARD_TLS_CERT, 'missing env ONBOARD_TLS_CERT')
 Assert(process.env.ONBOARD_CQL_SCHEMA, 'missing env ONBOARD_CQL_SCHEMA')
 Assert(process.env.ONBOARD_CQL_HOST, 'missing env ONBOARD_CQL_HOST')
 
+Assert(process.env.ONBOARD_WEBAPP_URL, 'missing env ONBOARD_WEBAPP_URL')
+
 Assert(
   process.env.ONBOARD_GOOGLE_OAUTH_CREDENTIALS,
   'missing env ONBOARD_GOOGLE_OAUTH_CREDENTIALS',
@@ -35,6 +37,8 @@ const config = {
 
   GOOGLE_OAUTH_CREDENTIALS: process.env.ONBOARD_GOOGLE_OAUTH_CREDENTIALS,
   GOOGLE_OAUTH_REDIRECT_URI: process.env.ONBOARD_GOOGLE_OAUTH_REDIRECT_URI,
+
+  WEBAPP_URL: process.env.ONBOARD_WEBAPP_URL,
 
   TESTING: process.env.NODE_ENV == 'testing',
 

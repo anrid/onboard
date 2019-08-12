@@ -1,13 +1,13 @@
 import Test from 'tape'
 import * as Db from './db/db'
 import C from './config'
-import T from './index.d'
+import * as T from './types'
 import * as App from './app'
 
-let app: T.IApp
+let app: T.App
 let setupDbOnce = false
 
-export async function setupApp(): Promise<T.IApp> {
+export async function setupApp(): Promise<T.App> {
   if (app) {
     return app
   }
@@ -26,19 +26,7 @@ export async function setupDb(dropKeyspace: boolean): Promise<void> {
   const keyspace = C.getKeyspace()
   const client = await Db.getClient()
 
-  if (dropKeyspace) {
-    console.log('Dropping keyspace:', keyspace)
-    await Db.mustExec(client, `DROP KEYSPACE IF EXISTS ${keyspace}`)
-  }
-
-  console.log('Creating keyspace:', keyspace)
-  await Db.mustExec(
-    client,
-    `
-    CREATE KEYSPACE IF NOT EXISTS ${keyspace}
-    WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 3};
-  `,
-  )
+  await Db.createKeyspace(client, keyspace, dropKeyspace)
 
   Test.onFinish((): void => {
     client.shutdown()

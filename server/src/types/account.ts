@@ -1,7 +1,7 @@
 import * as U from '../util'
-import T from '../index.d'
+import * as T from '.'
 
-export class Account implements T.IAccount {
+export class Account implements T.Account {
   public id: string
   public name: string = ''
   public owner_id: string = ''

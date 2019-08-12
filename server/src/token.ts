@@ -2,12 +2,12 @@ import Express from 'express'
 import Jwt from 'jsonwebtoken'
 import Fs from 'fs'
 import C from './config'
-import T from './index.d'
+import * as T from './types'
 import * as Error from './error'
 
-let instance: T.IToken
+let instance: T.Token
 
-export function getInstance(): T.IToken {
+export function getInstance(): T.Token {
   if (instance != null) {
     return instance
   }
@@ -15,7 +15,7 @@ export function getInstance(): T.IToken {
   const pubkey = Fs.readFileSync(C.TLS_PUBKEY)
   const privkey = Fs.readFileSync(C.TLS_PRIVKEY)
 
-  function create(s: T.ISession): string {
+  function create(s: T.Session): string {
     return Jwt.sign(s, privkey, {
       algorithm: 'RS256',
       issuer: 'align',
@@ -23,8 +23,8 @@ export function getInstance(): T.IToken {
     })
   }
 
-  function verify(token: string): T.ISession {
-    return Jwt.verify(token, pubkey, { issuer: 'align' }) as T.ISession
+  function verify(token: string): T.Session {
+    return Jwt.verify(token, pubkey, { issuer: 'align' }) as T.Session
   }
 
   // Require token middleware.
@@ -96,7 +96,7 @@ export function newSession(
   userId: string,
   email: string,
   isAdmin: boolean,
-): T.ISession {
+): T.Session {
   return {
     account_id: accountId,
     user_id: userId,

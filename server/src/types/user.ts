@@ -1,7 +1,7 @@
 import * as U from '../util'
-import T from '../index.d'
+import * as T from '.'
 
-export class User implements T.IUser {
+export class User implements T.User {
   public account_id: T.ID
   public id: T.ID
   public display_name: string = ''

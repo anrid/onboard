@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="34" height="33" viewBox="0 0 34 33">
+    <defs>
+        <linearGradient id="c" x1="100%" x2="0%" y1="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFAD85"/>
+            <stop offset="100%" stop-color="#FD4E76"/>
+        </linearGradient>
+        <path id="b" d="M12 4l2.5 5.3 5.5.8-4 4.1.9 5.8-4.9-2.7L7.1 20l.9-5.8-4-4.1 5.5-.8z"/>
+        <filter id="a" width="318.8%" height="318.8%" x="-109.4%" y="-78.1%" filterUnits="objectBoundingBox">
+            <feOffset dy="5" in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="5"/>
+            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 1 0 0 0 0 0.678431373 0 0 0 0 0.521568627 0 0 0 0.5 0"/>
+        </filter>
+    </defs>
+    <g fill="none" fill-rule="evenodd" transform="translate(5 -1)">
+        <use fill="#000" filter="url(#a)" xlink:href="#b"/>
+        <use fill="url(#c)" xlink:href="#b"/>
+    </g>
+</svg>

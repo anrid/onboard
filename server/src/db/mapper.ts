@@ -1,14 +1,24 @@
 import Cassandra from 'cassandra-driver'
 import * as Account from './account'
 import * as User from './user'
-import T from '../index.d'
 
-let mapper: T.ICQLMapper
+export interface CQL {
+  keyspace: string
+  client: Cassandra.Client
+  mapper: CQLMapper
+}
+
+export interface CQLMapper {
+  account: Cassandra.mapping.ModelMapper
+  user: Cassandra.mapping.ModelMapper
+}
+
+let mapper: CQLMapper
 
 export function createMapper(
   keyspace: string,
   client: Cassandra.Client,
-): T.ICQLMapper {
+): CQLMapper {
   const mappingOptions = {
     models: {
       [Account.TABLE]: {

@@ -1,14 +1,14 @@
 import * as Db from './db'
 import { Account } from '../types/account'
-import T from '../index.d'
+import * as T from '../types'
 
 export const TABLE = 'account'
 
-export class AccountStore implements T.IAccountStore {
+export class AccountStore implements T.AccountStore {
   public name: string = TABLE
-  public c: T.ICQL
+  public c: T.CQL
 
-  public constructor(c: T.ICQL) {
+  public constructor(c: T.CQL) {
     this.c = c
   }
 
@@ -30,16 +30,16 @@ export class AccountStore implements T.IAccountStore {
     )
   }
 
-  public create(d: T.IAccount): Promise<T.Result> {
+  public create(d: T.Account): Promise<T.Result> {
     return this.c.mapper.account.insert(d)
   }
 
-  public async getOne(id: string): Promise<T.IAccount> {
+  public async getOne(id: string): Promise<T.Account> {
     const r = await this.c.mapper.account.get({ id })
     return Object.assign(new Account(), r)
   }
 
-  public async updateOne(a: T.IAccount, fields: string[]): Promise<void> {
+  public async updateOne(a: T.Account, fields: string[]): Promise<void> {
     await this.c.mapper.account.update(a, { fields })
     return
   }

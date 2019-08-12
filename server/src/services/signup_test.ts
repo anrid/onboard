@@ -16,20 +16,20 @@ Test(
     await b.stores.user.deleteAll()
 
     t.test(
-      'signup',
+      'adminLogin',
       async (t): Promise<void> => {
         t.plan(6)
 
         const email = 'ace@base.se'
         const profile = {
-          displayName: 'Ace Base',
-          familyName: 'Base',
-          givenName: 'Ace',
+          display_name: 'Ace Base',
+          family_name: 'Base',
+          given_name: 'Ace',
           language: 'en',
           photo: 'x',
         }
 
-        let res = await b.services.signup.loginOrSignup(email, profile)
+        let res = await b.services.signup.login({ email, profile })
 
         t.ok(
           res.token.length > 10,
@@ -38,7 +38,7 @@ Test(
         t.equal(res.user.email, email, `should have correct email address`)
         t.ok(res.signup, `should be a signup`)
 
-        res = await b.services.signup.loginOrSignup(email, profile)
+        res = await b.services.signup.login({ email, profile })
 
         t.ok(
           res.token.length > 10,

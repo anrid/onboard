@@ -1,14 +1,14 @@
 import * as Db from './db'
 import { User } from '../types/user'
-import T from '../index.d'
+import * as T from '../types'
 
 export const TABLE = 'user'
 
-export class UserStore implements T.IUserStore {
+export class UserStore implements T.UserStore {
   public name: string = TABLE
-  public c: T.ICQL
+  public c: T.CQL
 
-  public constructor(c: T.ICQL) {
+  public constructor(c: T.CQL) {
     this.c = c
   }
 
@@ -45,20 +45,20 @@ export class UserStore implements T.IUserStore {
     )
   }
 
-  public create(d: T.IUser): Promise<T.Result> {
+  public create(d: T.User): Promise<T.Result> {
     return this.c.mapper.user.insert(d)
   }
 
-  public async getOne(accountId: string, id: string): Promise<T.IUser> {
+  public async getOne(accountId: string, id: string): Promise<T.User> {
     const r = await this.c.mapper.user.get({ account_id: accountId, id })
     return Object.assign(new User(), r)
   }
 
-  public async getUsersByEmail(email: string): Promise<T.IUser[]> {
+  public async getUsersByEmail(email: string): Promise<T.User[]> {
     const q = `SELECT * FROM ${this.c.keyspace}.${this.name}_by_email WHERE email = ?`
     const rs = await this.c.client.execute(q, [email])
     // console.log('r=', r)
-    return rs.rows.map((x): T.IUser => Object.assign(new User(), x))
+    return rs.rows.map((x): T.User => Object.assign(new User(), x))
   }
 
   public async deleteAll(): Promise<void> {

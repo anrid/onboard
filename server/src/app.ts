@@ -7,9 +7,9 @@ import * as Token from './token'
 import { GoogleController } from './controllers/google'
 import { bootstrap } from './bootstrap'
 import C from './config'
-import T from './index.d'
+import * as T from './types'
 
-export async function create(): Promise<T.IApp> {
+export async function create(): Promise<T.App> {
   const options = {
     key: Fs.readFileSync(C.TLS_PRIVKEY),
     cert: Fs.readFileSync(C.TLS_CERT),
@@ -32,6 +32,7 @@ export async function create(): Promise<T.IApp> {
   const googleCtrl = new GoogleController(backend.services.signup)
 
   app.get('/oauth', googleCtrl.auth())
+  app.get('/oauth-page', googleCtrl.authPage())
   app.get('/oauth/callback', googleCtrl.authCallback())
 
   const requireToken = Token.getInstance().require
